@@ -1,15 +1,25 @@
+//dependecies 
 const express = require("express");
 const mysql = require('mysql');
 const bodyparser = require('body-parser');
 const app = express();
 app.use(bodyparser.json());
-// set your preferred server port
+
+
+//port connection
 const port = 3080;
-// root endpoint response
+
+app.listen(port, () => {
+	console.log(`Your server ⚡ is running 🏃‍♂️ on http://localhost:${port}`);
+  });
+  
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
+
+
+//sql connection 
 var sqlconnect= mysql.createConnection({
   host : 'localhost',
   user:'root',
@@ -25,14 +35,10 @@ sqlconnect.connect((err)=> {
   console.log('Connection Failed!'+ JSON.stringify(err,undefined,2));
   });
 
-app.listen(port, () => {
-  console.log(`Your server ⚡ is running 🏃‍♂️ on http://localhost:${port}`);
-});
-
 
 //GET REQUEST
 //MUSIC TABLE 
-app.get('/playlist' , (req, res) => {
+app.get('/playlists' , (req, res) => {
   	sqlconnect.query('SELECT * FROM playlists', (err, rows, fields) => {
 		if (!err)
 			res.send(rows);
@@ -44,7 +50,7 @@ app.get('/playlist' , (req, res) => {
 
 //SONGS TABLE
 app.get('/songs', (req, res) => {
-	sqlconnect.query('SELECT * FROM songs', (err, rows, fields) => {
+	sqlconnect.query('SELECT songs.id, songs.title, songs.artist, songs.album FROM songs', (err, rows, fields) => {
 	  if (!err)
 		  res.send(rows);
 	  else
@@ -65,7 +71,7 @@ app.get('/playlists/:id' , (req, res) => {
 
 //SONGS TABLE
 app.get('/songs/:id' , (req, res) => {
-    sqlconnect.query('SELECT * FROM songs WHERE ID = ?',[req.params.id], (err, rows, fields) => {
+    sqlconnect.query('SELECT songs.id, songs.title, songs.artist, songs.album FROM songs WHERE ID = ?',[req.params.id], (err, rows, fields) => {
 		if (!err)
 		res.send(rows);
 		else
@@ -83,7 +89,7 @@ app.post('/playlists', (req, res) => {
 	var sql = "INSERT INTO PLAYLISTS VALUES(?,?,?)";
 	sqlconnect.query(sql, [id, name, songs], (err, rows, fields) => {
 	if (!err)
-		res.send('Learner Details Updated Successfully');
+		res.send('PLAYLISTS DETAILS ADDED');
 	else
 		console.log(err);
 	});
@@ -91,15 +97,15 @@ app.post('/playlists', (req, res) => {
 
 // SONGS TABLE
 app.post('/songs', (req, res) => {
-	let id = req.body.ID;
-	let pid=req.body.PID;
-	let title = req.body.TITLE;
-	let artist = req.body.ARTIST;
-	let album = req.body.ALBUM;
+	let id = req.body.id;
+	let pid=req.body.pid;
+	let title = req.body.title;
+	let artist = req.body.artist;
+	let album = req.body.album;
 	var sql = "INSERT INTO SONGS VALUES(?,?,?,?,?)";
 	sqlconnect.query(sql, [id, pid, title, artist, album], (err, rows, fields) => {
 	if (!err)
-		res.send('Learner Details Updated Successfully');
+		res.send('SONGS DETAILS ADDED');
 	else
 		console.log(err);
 	});
@@ -135,21 +141,21 @@ app.put('/playlists/:id', (req, res) => {
 	var sql = "UPDATE playlists SET name=?, songs=? WHERE ID=?;";
 	sqlconnect.query(sql, [name, songs, Number(req.params.id)], (err, rows, fields) => {
 	if (!err)
-		res.send('Learner Details Updated Successfully');
+		res.send('Playlists Updated Successfully');
 	else
 		console.log(err);
 	})
 });
 //SONGS TABLE 
 app.put('/songs/:id', (req, res) => {
-	let title = req.body.TITLE;
-	let artist = req.body.ARTIST;
-	let pid = req.body.PID;
-	let album = req.body.ALBUM;
+	let title = req.body.title;
+	let artist = req.body.artist;
+	let pid = req.body.pid;
+	let album = req.body.album;
 	var sql = "UPDATE songs SET pid = ?, title=?, artist=?, album=? WHERE ID=?;";
 	sqlconnect.query(sql, [pid, title, artist, album, Number(req.params.id)], (err, rows, fields) => {
 	if (!err)
-		res.send('Learner Details Updated Successfully');
+		res.send('Songs Updated Successfully');
 	else
 		console.log(err);
 	})
