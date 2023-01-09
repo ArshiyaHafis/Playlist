@@ -160,3 +160,9 @@ app.put('/songs/:id', (req, res) => {
 		console.log(err);
 	})
 });
+var axios = require("axios");
+app.get("/data", async function(req,res) {
+    const data = await axios.get("https://playlist-app.herokuapp.com");
+    console.log(data.data);
+    res.send(data.data);
+})
