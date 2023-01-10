@@ -2,6 +2,7 @@
 const express = require("express");
 const mysql = require('mysql');
 const bodyparser = require('body-parser');
+const serverless=require('serverless-http');
 const app = express();
 app.use(bodyparser.json());
 
@@ -160,9 +161,11 @@ app.put('/songs/:id', (req, res) => {
 		console.log(err);
 	})
 });
-var axios = require("axios");
-app.get("/data", async function(req,res) {
-    const data = await axios.get("https://playlist-app.herokuapp.com");
-    console.log(data.data);
-    res.send(data.data);
-})
+// var axios = require("axios");
+// // app.get("/data", async function(req,res) {
+// //     const data = await axios.get("https://dynamic-cobbler-f271bb.netlify.app/");
+// //     console.log(data.data);
+// //     res.send(data.data);
+// // })
+// app.use()
+module.exports.handler = serverless (app);
